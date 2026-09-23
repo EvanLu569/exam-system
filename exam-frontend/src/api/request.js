@@ -60,7 +60,10 @@ function handleError(e) {
 export default async function request(config) {
   try {
     if (USE_MOCK) {
-      return await mockRequest(config)
+      // Mock 引擎按「接口文档」路径匹配，要求带 /api 前缀；而 api 模块的 url 依赖 axios 的 baseURL 补齐前缀。
+      // 这里手动补上，保证 mock 与真实后端请求路径一致。
+      const url = config.url.startsWith('/api') ? config.url : `/api${config.url}`
+      return await mockRequest({ ...config, url })
     }
     return await service(config)
   } catch (e) {
