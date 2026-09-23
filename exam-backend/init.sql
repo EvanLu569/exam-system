@@ -96,14 +96,34 @@ CREATE TABLE `wrong_question` (
 INSERT INTO `user` (`username`, `password`, `role`) VALUES ('admin', '123456', 'admin');
 INSERT INTO `user` (`username`, `password`, `role`) VALUES ('student1', '123456', 'student');
 
+
 -- 题目
 INSERT INTO `question` (`content`, `options`, `correct_answer`, `score`, `type`, `difficulty`, `knowledge_point`) VALUES
                                                                                                                       ('以下哪个是 Java 集合接口？', '["List", "Thread", "Servlet", "Socket"]', 'A', 5, 1, 1, '集合'),
                                                                                                                       ('以下哪些是 Java 基本数据类型？', '["int", "String", "boolean", "double"]', 'ACD', 5, 2, 1, '基础语法'),
                                                                                                                       ('Java 中 String 是可变的。', '["正确", "错误"]', 'B', 5, 3, 1, '基础语法'),
                                                                                                                       ('HashMap 是线程安全的。', '["正确", "错误"]', 'B', 5, 3, 2, '集合'),
-                                                                                                                      ('以下哪个不是 JVM 内存区域？', '["堆", "栈", "寄存器", "方法区"]', 'C', 5, 1, 3, 'JVM');
+                                                                                                                      ('以下哪个不是 JVM 内存区域？', '["堆", "栈", "寄存器", "方法区"]', 'C', 5, 1, 3, 'JVM'),
+                                                                                                                      ('ArrayList 和 LinkedList 的区别？', '["数组vs链表", "线程安全", "性能", "以上都是"]', 'A', 5, 1, 2, '集合'),
+                                                                                                                      ('以下哪个是线程安全的集合？', '["ArrayList", "HashMap", "ConcurrentHashMap", "LinkedList"]', 'C', 5, 1, 2, '多线程'),
+                                                                                                                      ('synchronized 和 Lock 的区别？', '["性能", "可中断", "公平性", "以上都是"]', 'D', 5, 1, 3, '多线程'),
+                                                                                                                      ('JVM 垃圾回收算法有哪些？', '["标记清除", "复制", "标记整理", "以上都是"]', 'D', 5, 2, 3, 'JVM'),
+                                                                                                                      ('以下哪些是 Java 8 新特性？', '["Lambda", "Stream", "Optional", "以上都是"]', 'D', 5, 2, 2, '基础语法'),
+                                                                                                                      ('接口和抽象类的区别？', '["多继承", "构造方法", "成员变量", "以上都是"]', 'D', 5, 1, 2, '基础语法'),
+                                                                                                                      ('Spring 的 IOC 是什么？', '["控制反转", "面向切面", "依赖注入", "以上都是"]', 'A', 5, 1, 2, 'Spring'),
+                                                                                                                      ('Spring AOP 的实现原理？', '["动态代理", "反射", "字节码", "以上都是"]', 'D', 5, 1, 3, 'Spring'),
+                                                                                                                      ('MySQL 索引的底层结构？', '["B+树", "红黑树", "哈希表", "链表"]', 'A', 5, 1, 2, 'MySQL'),
+                                                                                                                      ('事务的四大特性是什么？', '["ACID", "BASE", "CAP", "以上都是"]', 'A', 5, 1, 2, 'MySQL');
 
 -- 试卷
 INSERT INTO `exam_paper` (`name`, `duration_minutes`, `total_score`, `status`)
 VALUES ('测试考试', 30, 100, 1);
+
+-- 试卷-题目关联（试卷1 关联 5 道题）
+INSERT INTO `paper_question` (`paper_id`, `question_id`, `score`, `sort_order`) VALUES
+                                                                                 (1, 1, 5, 1),
+                                                                                 (1, 2, 5, 2),
+                                                                                 (1, 3, 5, 3),
+                                                                                 (1, 4, 5, 4),
+                                                                                 (1, 5, 5, 5);
+
