@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.evan.examsystem.mapper.ExamPaperMapper">
+
+    <select id="page" resultType="ExamPaper">
+        SELECT * FROM exam_paper ORDER BY id DESC LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM exam_paper
+    </select>
+
+    <select id="findById" resultType="ExamPaper">
+        SELECT * FROM exam_paper WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO exam_paper(name, duration_minutes, total_score, start_time, end_time, status)
+        VALUES(#{name}, #{durationMinutes}, #{totalScore}, #{startTime}, #{endTime}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE exam_paper
+        SET name = #{name},
+            duration_minutes = #{durationMinutes},
+            total_score = #{totalScore},
+            start_time = #{startTime},
+            end_time = #{endTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM exam_paper WHERE id = #{id}
+    </delete>
+
+    <update id="updateStatus">
+        UPDATE exam_paper SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

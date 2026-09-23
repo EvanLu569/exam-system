@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.evan.examsystem.mapper.AnswerRecordMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO answer_record(record_id, question_id, user_answer, is_correct, score)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.recordId}, #{item.questionId}, #{item.userAnswer}, #{item.isCorrect}, #{item.score})
+        </foreach>
+    </insert>
+
+    <select id="findByRecordId" resultType="AnswerRecord">
+        SELECT * FROM answer_record WHERE record_id = #{recordId}
+    </select>
+
+    <delete id="deleteByRecordId">
+        DELETE FROM answer_record WHERE record_id = #{recordId}
+    </delete>
+
+</mapper>

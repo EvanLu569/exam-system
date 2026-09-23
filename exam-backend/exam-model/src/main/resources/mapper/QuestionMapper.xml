@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.evan.examsystem.mapper.QuestionMapper">
+
+    <!-- 通用查询条件 -->
+    <sql id="queryCondition">
+        <where>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="difficulty != null">
+                AND difficulty = #{difficulty}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND content LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="page" resultType="Question">
+        SELECT * FROM question
+        <include refid="queryCondition"/>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 总数 -->
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM question
+        <include refid="queryCondition"/>
+    </select>
+
+    <!-- 详情 -->
+    <select id="findById" resultType="Question">
+        SELECT * FROM question WHERE id = #{id}
+    </select>
+
+    <!-- 根据 ID 列表批量查 -->
+    <select id="findByIds" resultType="Question">
+        SELECT * FROM question
+        <where>
+            <if test="ids != null and ids.size() > 0">
+                id IN
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="ids == null or ids.size() == 0">
+                1 = 0
+            </if>
+        </where>
+    </select>
+
+    <!-- 新增 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question(content, options, correct_answer, score, type, difficulty, knowledge_point)
+        VALUES(#{content}, #{options}, #{correctAnswer}, #{score}, #{type}, #{difficulty}, #{knowledgePoint})
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update">
+        UPDATE question
+        SET content = #{content},
+            options = #{options},
+            correct_answer = #{correctAnswer},
+            score = #{score},
+            type = #{type},
+            difficulty = #{difficulty},
+            knowledge_point = #{knowledgePoint}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="deleteById">
+        DELETE FROM question WHERE id = #{id}
+    </delete>
+
+<!--    智能组卷-->
+    <select id="findIdsByTypeAndDifficulty" resultType="long">
+        SELECT id FROM question
+        <where>
+            <if test="type != null">AND type = #{type}</if>
+            <if test="difficulty != null">AND difficulty = #{difficulty}</if>
+        </where>
+    </select>
+
+</mapper>

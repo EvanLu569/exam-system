@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.evan.examsystem.mapper.PaperQuestionMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO paper_question(paper_id, question_id, score, sort_order)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.paperId}, #{item.questionId}, #{item.score}, #{item.sortOrder})
+        </foreach>
+    </insert>
+
+    <select id="findByPaperId" resultType="PaperQuestion">
+        SELECT * FROM paper_question WHERE paper_id = #{paperId} ORDER BY sort_order ASC
+    </select>
+
+    <delete id="deleteByPaperId">
+        DELETE FROM paper_question WHERE paper_id = #{paperId}
+    </delete>
+
+    <select id="countByPaperId" resultType="int">
+        SELECT COUNT(*) FROM paper_question WHERE paper_id = #{paperId}
+    </select>
+
+</mapper>

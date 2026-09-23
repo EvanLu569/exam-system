@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.evan.examsystem.mapper.ExamRecordMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO exam_record(paper_id, user_id, total_score, start_time, status)
+        VALUES(#{paperId}, #{userId}, #{totalScore}, #{startTime}, #{status})
+    </insert>
+
+    <select id="findById" resultType="ExamRecord">
+        SELECT * FROM exam_record WHERE id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE exam_record
+        SET total_score = #{totalScore},
+            submit_time = #{submitTime},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByUserId" resultType="ExamRecord">
+        SELECT * FROM exam_record
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+            LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*) FROM exam_record WHERE user_id = #{userId}
+    </select>
+
+    <select id="findByPaperAndUser" resultType="ExamRecord">
+        SELECT * FROM exam_record
+        WHERE paper_id = #{paperId} AND user_id = #{userId}
+        ORDER BY id DESC LIMIT 1
+    </select>
+
+</mapper>
