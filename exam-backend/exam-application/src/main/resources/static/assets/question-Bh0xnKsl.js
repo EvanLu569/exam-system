@@ -1,0 +1,1 @@
+import{t as e}from"./request-DSUiQF2b.js";function t(t){return e({url:`/questions`,method:`get`,params:t})}function n(t){return e({url:`/questions`,method:`post`,data:t})}function r(t,n){return e({url:`/questions/${t}`,method:`put`,data:n})}function i(t){return e({url:`/questions/${t}`,method:`delete`})}export{r as i,i as n,t as r,n as t};

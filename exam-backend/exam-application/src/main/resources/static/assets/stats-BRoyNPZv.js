@@ -1,0 +1,1 @@
+import{t as e}from"./request-DSUiQF2b.js";function t(){return e({url:`/stats/my-scores`,method:`get`})}function n(){return e({url:`/stats/knowledge-mastery`,method:`get`})}function r(t){return e({url:`/stats/paper/${t}/accuracy`,method:`get`})}export{t as n,r,n as t};
