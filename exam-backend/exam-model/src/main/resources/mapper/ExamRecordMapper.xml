@@ -37,4 +37,14 @@
         ORDER BY id DESC LIMIT 1
     </select>
 
+    <select id="findByUserIdAndStatus" resultType="ExamRecord">
+        SELECT * FROM exam_record
+        WHERE user_id = #{userId} AND status = #{status}
+        ORDER BY id DESC
+    </select>
+
+    <select id="findByPaperId" resultType="ExamRecord">
+        SELECT * FROM exam_record WHERE paper_id = #{paperId}
+    </select>
+
 </mapper>

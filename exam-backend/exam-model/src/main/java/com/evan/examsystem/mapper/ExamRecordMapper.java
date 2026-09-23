@@ -17,4 +17,9 @@ public interface ExamRecordMapper {
     long countByUserId(@Param("userId") Long userId);
     ExamRecord findByPaperAndUser(@Param("paperId") Long paperId,
                                   @Param("userId") Long userId);
+
+    List<ExamRecord> findByUserIdAndStatus(@Param("userId") Long userId,
+                                           @Param("status") Integer status);
+
+    List<ExamRecord> findByPaperId(@Param("paperId") Long paperId);
 }

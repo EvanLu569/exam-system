@@ -11,4 +11,6 @@ public interface AnswerRecordMapper {
     int batchInsert(@Param("list") List<AnswerRecord> list);
     List<AnswerRecord> findByRecordId(@Param("recordId") Long recordId);
     int deleteByRecordId(@Param("recordId") Long recordId);
+
+    List<AnswerRecord> findByRecordIds(@Param("list") List<Long> recordIds);
 }

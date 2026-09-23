@@ -230,6 +230,89 @@ public class ExamServiceImpl implements ExamService {
         return result;
     }
 
+    @Override
+    public List<Map<String, Object>> available(Long userId) {
+        List<ExamPaper> papers = examPaperMapper.findByStatus(1);
+        LocalDateTime now = LocalDateTime.now();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (ExamPaper p : papers) {
+            if (p.getStartTime() != null && p.getStartTime().isAfter(now)) continue;
+            if (p.getEndTime() != null && p.getEndTime().isBefore(now)) continue;
+            ExamRecord record = examRecordMapper.findByPaperAndUser(p.getId(), userId);
+            boolean submitted = record != null && record.getStatus() == 1;
+            boolean inProgress = record != null && record.getStatus() == 0;
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", p.getId());
+            m.put("name", p.getName());
+            m.put("durationMinutes", p.getDurationMinutes());
+            m.put("totalScore", p.getTotalScore());
+            m.put("startTime", p.getStartTime());
+            m.put("endTime", p.getEndTime());
+            m.put("status", p.getStatus());
+            m.put("joined", submitted);
+            m.put("submitted", submitted);
+            m.put("inProgress", inProgress);
+            result.add(m);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> recordDetail(Long recordId, Long userId, String role) {
+        ExamRecord record = examRecordMapper.findById(recordId);
+        if (record == null) throw new BusinessException(ResultCode.NOT_FOUND);
+        if (!"admin".equals(role) && !record.getUserId().equals(userId)) {
+            throw new BusinessException(ResultCode.FORBIDDEN);
+        }
+        ExamPaper paper = examPaperMapper.findById(record.getPaperId());
+        List<AnswerRecord> answers = answerRecordMapper.findByRecordId(recordId);
+        Map<Long, Question> qMap = new HashMap<>();
+        if (!answers.isEmpty()) {
+            List<Long> qids = answers.stream().map(AnswerRecord::getQuestionId).collect(Collectors.toList());
+            qMap = questionMapper.findByIds(qids).stream()
+                    .collect(Collectors.toMap(Question::getId, q -> q));
+        }
+
+        List<Map<String, Object>> questions = new ArrayList<>();
+        for (AnswerRecord a : answers) {
+            Question q = qMap.get(a.getQuestionId());
+            if (q == null) continue;
+            Map<String, Object> qm = new HashMap<>();
+            qm.put("questionId", q.getId());
+            qm.put("content", q.getContent());
+            qm.put("options", parseOptions(q.getOptions()));
+            qm.put("type", q.getType());
+            qm.put("userAnswer", a.getUserAnswer());
+            qm.put("correctAnswer", q.getCorrectAnswer());
+            qm.put("isCorrect", a.getIsCorrect() != null && a.getIsCorrect() == 1);
+            qm.put("score", a.getScore());
+            questions.add(qm);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", record.getId());
+        result.put("paperId", record.getPaperId());
+        result.put("paperName", paper == null ? "已删除试卷" : paper.getName());
+        result.put("paperTotalScore", paper == null ? 0 : paper.getTotalScore());
+        result.put("totalScore", record.getTotalScore());
+        result.put("correctCount", questions.stream().filter(q -> Boolean.TRUE.equals(q.get("isCorrect"))).count());
+        result.put("totalCount", questions.size());
+        result.put("startTime", record.getStartTime());
+        result.put("submitTime", record.getSubmitTime());
+        result.put("status", record.getStatus());
+        result.put("questions", questions);
+        return result;
+    }
+
+    private List<String> parseOptions(String optionsJson) {
+        if (optionsJson == null || optionsJson.isEmpty()) return new ArrayList<>();
+        try {
+            return objectMapper.readValue(optionsJson, new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
     /** 判卷：单选/判断全对，多选少选得半分、错选不得分 */
     private boolean isCorrect(Integer type, String userAnswer, String correctAnswer) {
         if (userAnswer == null || correctAnswer == null) return false;

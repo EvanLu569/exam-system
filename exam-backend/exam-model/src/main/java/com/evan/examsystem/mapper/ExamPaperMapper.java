@@ -22,4 +22,6 @@ public interface ExamPaperMapper {
     int deleteById(@Param("id") Long id);
 
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+
+    List<ExamPaper> findByStatus(@Param("status") Integer status);
 }

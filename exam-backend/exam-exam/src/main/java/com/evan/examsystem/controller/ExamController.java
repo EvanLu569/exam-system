@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "考试模块")
@@ -49,5 +50,20 @@ public class ExamController {
             HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         return Result.success(examService.myRecords(userId, page, size));
+    }
+
+    @Operation(summary = "可参加的考试列表")
+    @GetMapping("/available")
+    public Result<List<Map<String, Object>>> available(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        return Result.success(examService.available(userId));
+    }
+
+    @Operation(summary = "考试记录详情")
+    @GetMapping("/records/{id}")
+    public Result<Map<String, Object>> recordDetail(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        String role = (String) request.getAttribute("role");
+        return Result.success(examService.recordDetail(id, userId, role));
     }
 }
